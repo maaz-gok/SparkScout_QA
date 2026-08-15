@@ -1,0 +1,79 @@
+name: QA Report — Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deployment at a time; let in-flight runs finish rather than cancelling mid-deploy.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  test-and-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # API project only — no real UI test suite exists yet (tests/example.spec.ts is unused
+      # Playwright boilerplate), and the API project needs no browser install, so this is fast.
+      #
+      # SKIP_SECURITY_TESTS=true excludes the IDOR/security probes in
+      # deal-reviews-and-deliverables.spec.ts — those mutate real production data and are run
+      # manually and deliberately, not automatically on every push. See playwright.config.ts.
+      #
+      # continue-on-error: true so a red report still gets generated and published rather than
+      # blocking deployment — the point of this report is to show current pass/fail status.
+      - name: Run API test suite
+        run: npx playwright test --project=api
+        continue-on-error: true
+        env:
+          SKIP_SECURITY_TESTS: 'true'
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+          TEST_EMAIL_2: ${{ secrets.TEST_EMAIL_2 }}
+          TEST_PASSWORD_2: ${{ secrets.TEST_PASSWORD_2 }}
+          TEST_BRAND_EMAIL: ${{ secrets.TEST_BRAND_EMAIL }}
+          TEST_BRAND_PASSWORD: ${{ secrets.TEST_BRAND_PASSWORD }}
+          TEST_BRAND_EMAIL_2: ${{ secrets.TEST_BRAND_EMAIL_2 }}
+          TEST_BRAND_PASSWORD_2: ${{ secrets.TEST_BRAND_PASSWORD_2 }}
+          TEST_AGENCY_EMAIL: ${{ secrets.TEST_AGENCY_EMAIL }}
+          TEST_AGENCY_PASSWORD: ${{ secrets.TEST_AGENCY_PASSWORD }}
+          TEST_AGENCY_EMAIL_2: ${{ secrets.TEST_AGENCY_EMAIL_2 }}
+          TEST_AGENCY_PASSWORD_2: ${{ secrets.TEST_AGENCY_PASSWORD_2 }}
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+
+      - name: Generate Allure report
+        if: always()
+        run: npm run allure:generate
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: allure-report
+
+  deploy:
+    needs: test-and-report
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

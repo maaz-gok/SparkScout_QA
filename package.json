@@ -1,0 +1,21 @@
+{
+  "name": "sparkscout",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "allure:generate": "allure generate ./allure-results --output allure-report --report-name \"SparkScout QA\"",
+    "allure:open": "allure open ./allure-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.2.0",
+    "allure": "^3.15.0",
+    "allure-playwright": "^3.10.2",
+    "dotenv": "^17.4.2"
+  }
+}

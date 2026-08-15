@@ -1,0 +1,29 @@
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+.playwright-mcp/
+
+# Allure
+/allure-results/
+/allure-report/
+
+# Secrets
+.env
+.env.local
+
+# Sensitive — live, unpatched vulnerability findings against production. Never push.
+security-bug-log.md
+security-bug-log.html
+security-bug-log.pdf
+api-bug-log.md
+api-bug-evidence.md
+/API bugs/
+/bug-screenshots/
+
+# macOS
+.DS_Store
