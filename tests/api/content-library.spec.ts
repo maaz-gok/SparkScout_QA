@@ -45,7 +45,6 @@ test.describe('Content Library API', () => {
     // contentType is not — leaving it out reaches the database and crashes with a raw
     // "null value in column content_type ... violates not-null constraint" 500 error.
     // See api-bug-log.md.
-    test.fail();
     const res = await authedApi.post('/content-library', {
       data: { title: `Missing content type ${Date.now()}`, contentUrl: 'https://example.com/file.jpg' },
     });
@@ -83,7 +82,6 @@ test.describe('Content Library API', () => {
     // BUG-API: same "Cannot coerce the result to a single JSON object" crash pattern as
     // BUG-API-003. GET and DELETE on this exact same resource correctly return 404 for a
     // non-owner; only PATCH crashes. See api-bug-log.md.
-    test.fail();
     const createRes = await authedApi.post('/content-library', {
       data: { title: `Mismatch content ${Date.now()}`, contentUrl: 'https://example.com/file.jpg', contentType: 'image' },
     });

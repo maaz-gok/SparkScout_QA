@@ -78,7 +78,6 @@ test.describe('Orgs API', () => {
     // "No agency found for this account" — see api-bug-log.md for the full picture
     // (this affects agency-profile, agency-clients, and agency-team-invitations too,
     // not just this one endpoint).
-    test.fail();
     const createRes = await agencyApi.post('/orgs/agency/brand-profiles', {
       data: { company_name: `API test brand ${Date.now()}` },
     });
@@ -89,7 +88,6 @@ test.describe('Orgs API', () => {
     // BUG-API: passing a non-UUID string here returns a 500 with a raw Postgres error
     // message ("invalid input syntax for type uuid: ...") instead of a 400. Same problem
     // on the batch lookup endpoint. See api-bug-log.md.
-    test.fail();
     const res = await authedApi.get('/orgs/lookup/not-a-uuid');
     expect(res.status(), await res.text()).toBe(400);
   });
@@ -98,7 +96,6 @@ test.describe('Orgs API', () => {
     authedApi,
   }) => {
     // BUG-API: same crash as above, on the batch endpoint. See api-bug-log.md.
-    test.fail();
     const res = await authedApi.get('/orgs/lookup/batch?ids=not-a-uuid');
     expect(res.status(), await res.text()).toBe(400);
   });

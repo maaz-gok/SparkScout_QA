@@ -29,7 +29,6 @@ test.describe('Explore API', () => {
     // not data-dependent or account-specific — it fails the same way for every account,
     // every time. The Explore page's featured-campaigns carousel is fully broken.
     // See api-bug-log.md.
-    test.fail();
     const res = await authedApi.get('/explore/featured');
     expect(res.ok(), await res.text()).toBeTruthy();
   });
@@ -59,7 +58,6 @@ test.describe('Explore API', () => {
   test('follow-toggle — a brand id that does not exist crashes instead of a clean 404', async ({ authedApi }) => {
     // BUG-API: crashes with a raw foreign-key constraint violation
     // ("brand_follows_brand_org_id_fkey") instead of a 404. See api-bug-log.md.
-    test.fail();
     const res = await authedApi.post('/explore/brands/00000000-0000-0000-0000-000000000000/follow-toggle', {
       data: {},
     });
@@ -69,14 +67,12 @@ test.describe('Explore API', () => {
   test('saved-campaigns toggle — missing campaign id crashes instead of a clean 400', async ({ authedApi }) => {
     // BUG-API: crashes with a raw not-null constraint violation on the database column
     // instead of a validation error. Same pattern as BUG-API-014. See api-bug-log.md.
-    test.fail();
     const res = await authedApi.post('/explore/saved-campaigns/toggle', { data: {} });
     expect(res.status(), await res.text()).toBe(400);
   });
 
   test('saved-decks toggle — missing deck id crashes instead of a clean 400', async ({ authedApi }) => {
     // BUG-API: same pattern as the saved-campaigns case above. See api-bug-log.md.
-    test.fail();
     const res = await authedApi.post('/explore/saved-decks/toggle', { data: {} });
     expect(res.status(), await res.text()).toBe(400);
   });
@@ -87,7 +83,6 @@ test.describe('Explore API', () => {
     // BUG-API: crashes with "invalid input syntax for type uuid: \"undefined\"" — the
     // literal string "undefined" reaching a database query, meaning a missing field went
     // completely unvalidated before being used. See api-bug-log.md.
-    test.fail();
     const res = await authedApi.post('/explore/applications', { data: {} });
     expect(res.status(), await res.text()).toBe(400);
   });

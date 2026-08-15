@@ -109,7 +109,6 @@ test.describe('Invoicing API', () => {
     // mark-paid, when the invoice id belongs to a different user. GET and DELETE on the
     // same resource correctly return 404 for this case; only mark-paid crashes.
     // See api-bug-log.md.
-    test.fail();
     const clientRes = await authedApi.post('/invoicing/clients', {
       data: { name: `Mark-paid target client ${Date.now()}`, email: 'client@example.com' },
     });
@@ -139,7 +138,6 @@ test.describe('Invoicing API', () => {
     // body (e.g. 200, 201) matching the documented envelope shape. Every write action in
     // this module (create client, create invoice, create template, delete, settings save)
     // instead returns the literal boolean `true`. See api-bug-log.md.
-    test.fail();
     const res = await authedApi.post('/invoicing/clients', {
       data: { name: `Envelope check client ${Date.now()}`, email: 'client@example.com' },
     });

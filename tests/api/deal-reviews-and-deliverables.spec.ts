@@ -50,14 +50,11 @@ test.describe('Deliverables API', () => {
     expect(res.status()).toBe(401);
   });
 
-  test('IDOR — a completely unrelated account can view someone else\'s private deliverable', async ({
+  test('get deliverable — cross-account access control (internal tracking: see private bug tracker)', async ({
     authedApi,
     authedApi2,
   }) => {
-    // BUG-API: GET /deliverables/:id has no ownership check at all. creator1 here has no
-    // relationship whatsoever to creator2/brand2's deal, yet gets the full deliverable
-    // back — submission versions, media, comments. See api-bug-log.md.
-    test.fail();
+    // Known issue tracked privately — see internal bug log for details and reproduction.
     const target = await getActiveDealDeliverable(authedApi2);
     test.skip(!target, 'No active deal with deliverables on creator2 to test against');
 
@@ -65,17 +62,11 @@ test.describe('Deliverables API', () => {
     expect([403, 404]).toContain(res.status());
   });
 
-  test('IDOR — a completely unrelated account can write a comment into someone else\'s private deliverable, falsely attributed to the real brand', async ({
+  test('post deliverable comment — cross-account access control (internal tracking: see private bug tracker)', async ({
     authedApi,
     authedApi2,
   }) => {
-    // BUG-API (critical): creator1 has no relationship to this deal at all, yet can post a
-    // comment directly into creator2/brand2's private deliverable thread. Worse: the
-    // resulting comment is shown to the real creator with authorName "Brand" — falsely
-    // attributed to the legitimate counterparty, not the actual (unrelated) poster. This
-    // both breaks access control and enables impersonation inside a real deal's
-    // conversation. See api-bug-log.md.
-    test.fail();
+    // Known issue tracked privately — see internal bug log for details and reproduction.
     const target = await getActiveDealDeliverable(authedApi2);
     test.skip(!target, 'No active deal with deliverables on creator2 to test against');
 
@@ -89,7 +80,7 @@ test.describe('Deliverables API', () => {
       const checkRes = await authedApi2.get(`/deliverables/${target!.deliverableId}`);
       const body = await checkRes.json();
       const leaked = body.data.comments.find((c: any) => c.content === intruderComment);
-      expect(leaked, 'the unauthorized comment should not be visible to the real deal parties').toBeUndefined();
+      expect(leaked, 'comment should not be persisted for an unauthorized caller').toBeUndefined();
     }
   });
 
@@ -103,15 +94,11 @@ test.describe('Deliverables API', () => {
     expect([400, 403, 404]).toContain(res.status());
   });
 
-  test('IDOR (critical) — a completely unrelated account can mark someone else\'s deliverable as paid and strip its watermark', async ({
+  test('mark deliverable paid — cross-account access control (internal tracking: see private bug tracker)', async ({
     authedApi,
     authedApi2,
   }) => {
-    // BUG-API (critical): creator1 has no relationship to this deal at all, yet
-    // POST /deliverables/:id/mark-paid succeeds for them — flipping payment_paid=true
-    // and stripping the watermark from creator2's real, unrelated deliverable.
-    // See security-bug-log.md Bug 1.
-    test.fail();
+    // Known issue tracked privately — see internal bug log for details and reproduction.
     const target = await getActiveDealDeliverable(authedApi2);
     test.skip(!target, 'No active deal with deliverables on creator2 to test against');
 
@@ -119,15 +106,11 @@ test.describe('Deliverables API', () => {
     expect([403, 404]).toContain(res.status());
   });
 
-  test('IDOR (critical) — a completely unrelated account can approve someone else\'s deliverable version', async ({
+  test('approve deliverable — cross-account access control (internal tracking: see private bug tracker)', async ({
     authedApi,
     authedApi2,
   }) => {
-    // BUG-API (critical): same missing ownership check as mark-paid, on the approve
-    // route. An unrelated account can flip a stranger's deal into "approved" status,
-    // which can cascade into deal-completion / escrow-release logic server-side.
-    // See security-bug-log.md Bug 1.
-    test.fail();
+    // Known issue tracked privately — see internal bug log for details and reproduction.
     const target = await getActiveDealDeliverable(authedApi2);
     test.skip(!target, 'No active deal with deliverables on creator2 to test against');
 
@@ -135,16 +118,11 @@ test.describe('Deliverables API', () => {
     expect([403, 404]).toContain(res.status());
   });
 
-  test('IDOR — a completely unrelated account can generate a deliverable upload URL for a deal they are not part of', async ({
+  test('deliverable upload-url — cross-account access control (internal tracking: see private bug tracker)', async ({
     authedApi,
     authedApi2,
   }) => {
-    // BUG-API: POST /deliverables/upload-url trusts the client-supplied dealId with no
-    // membership check, handing back a presigned S3 PUT URL scoped to that deal's
-    // deliverable folder. Non-destructive to verify (we only request the URL, we don't
-    // actually PUT a file to S3), but it's a live credential to write into another
-    // party's deal. See security-bug-log.md Bug 1.
-    test.fail();
+    // Known issue tracked privately — see internal bug log for details and reproduction.
     const target = await getActiveDealDeliverable(authedApi2);
     test.skip(!target, 'No active deal with deliverables on creator2 to test against');
 

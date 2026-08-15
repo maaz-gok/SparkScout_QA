@@ -39,7 +39,6 @@ test.describe('Messages API', () => {
     // (camelCase or snake_case, together or separately) gets past "Organization id is
     // required" once a real participantOrgId value is included — even when a valid org id
     // is clearly supplied elsewhere in the same request. See api-bug-log.md.
-    test.fail();
     const myOrgId = (await (await authedApi.get('/orgs/me')).json()).data.id;
     const otherOrgId = (await (await authedApi2.get('/orgs/me')).json()).data.id;
 

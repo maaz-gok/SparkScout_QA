@@ -30,14 +30,12 @@ test.describe('Recommendations API', () => {
 
   test('track-search — missing query crashes instead of a clean 400', async ({ authedApi }) => {
     // BUG-API: part of the same pattern as BUG-API-017. See api-bug-log.md.
-    test.fail();
     const res = await authedApi.post('/recommendations/track-search', { data: {} });
     expect(res.status(), await res.text()).toBe(400);
   });
 
   test('track-interaction — missing campaign id crashes instead of a clean 400', async ({ authedApi }) => {
     // BUG-API: part of the same pattern as BUG-API-017. See api-bug-log.md.
-    test.fail();
     const res = await authedApi.post('/recommendations/track-interaction', { data: {} });
     expect(res.status(), await res.text()).toBe(400);
   });
@@ -80,7 +78,6 @@ test.describe('AI Tools API', () => {
     // BUG-API: same "Cannot coerce the result to a single JSON object" crash pattern as
     // BUG-API-003, but worse here — the HTTP status is 200 (normally "it worked") while
     // the body says `"success": false` with the raw database error. See api-bug-log.md.
-    test.fail();
     const res = await authedApi.patch('/ai-tools/generations/00000000-0000-0000-0000-000000000000', {
       data: { status: 'completed' },
     });

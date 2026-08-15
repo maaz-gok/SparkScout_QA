@@ -50,7 +50,6 @@ test.describe('Projects API', () => {
 
   test('create project — whitespace-only name', async ({ authedApi }) => {
     // BUG-API: whitespace-only name is accepted (201) instead of rejected (400). See api-bug-log.md.
-    test.fail();
     const res = await authedApi.post('/projects', { data: { name: '   ' } });
     expect(res.status(), await res.text()).toBe(400);
   });
@@ -102,7 +101,6 @@ test.describe('Projects API', () => {
     // does not own — it should return 403/404 like GET and PATCH on the same resource do.
     // The project is NOT actually deleted (silent no-op), so there is no real data loss,
     // but the response lies about what happened. See api-bug-log.md.
-    test.fail();
     const createRes = await authedApi.post('/projects', {
       data: { name: `IDOR test project ${Date.now()}` },
     });

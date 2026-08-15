@@ -32,7 +32,6 @@ test.describe('User Settings API', () => {
     // "success", ...} — a different field name, carrying a redundant/conflicting value.
     // Neither matches the documented envelope used by the rest of the API
     // ({ data, status: <number>, message }). See api-bug-log.md.
-    test.fail();
     const getRes = await authedApi.get('/user-settings');
     const getBody = await getRes.json();
 

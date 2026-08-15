@@ -126,7 +126,6 @@ test.describe('Applications + Deals workflow', () => {
   }) => {
     // BUG-API: a well-formed but non-existent deal id, with a fully valid status value,
     // crashes with a bare 500 "Internal server error" instead of a 404. See api-bug-log.md.
-    test.fail();
     const res = await authedApi2.patch('/deals/00000000-0000-0000-0000-000000000000/status', {
       data: { status: 'completed' },
     });

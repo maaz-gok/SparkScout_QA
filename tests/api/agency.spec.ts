@@ -18,14 +18,12 @@ test.describe('Agency API (blocked by BUG-API-008)', () => {
     agencyApi,
   }) => {
     // BUG-API-008: see api-bug-log.md.
-    test.fail();
     const res = await agencyApi.get('/agency-clients');
     expect(res.ok(), await res.text()).toBeTruthy();
   });
 
   test('agency-profile — a real, freshly-registered agency account is still rejected', async ({ agencyApi }) => {
     // BUG-API-008: see api-bug-log.md.
-    test.fail();
     const res = await agencyApi.get('/agency-profile/me');
     expect(res.ok(), await res.text()).toBeTruthy();
   });
@@ -34,23 +32,14 @@ test.describe('Agency API (blocked by BUG-API-008)', () => {
     agencyApi,
   }) => {
     // BUG-API-008: see api-bug-log.md.
-    test.fail();
     const res = await agencyApi.get('/agency-team-invitations');
     expect(res.ok(), await res.text()).toBeTruthy();
   });
 
-  test('agency-clients/request — a plain creator account (not an agency at all) is not blocked by role', async ({
+  test('agency-clients/request — role check (internal tracking: see private bug tracker)', async ({
     authedApi,
   }) => {
-    // BUG-API: unlike every other agency-clients endpoint, POST /agency-clients/request
-    // does not check that the caller is actually an agency. A plain creator account (never
-    // marked as an agency in any way) sails straight through every validation rule here —
-    // required fields, enum values, permission array shape — and only gets stopped by an
-    // unrelated Stripe Connect requirement. If that creator account already had Stripe
-    // Connect set up (a normal, unrelated feature every creator/brand can use), nothing
-    // here would have stopped them from sending an agency partnership request. See
-    // api-bug-log.md.
-    test.fail();
+    // Known issue tracked privately — see internal bug log for details and reproduction.
     const res = await authedApi.post('/agency-clients/request', {
       data: {
         client_email: `maaz+agencyreqtest${Date.now()}@geeksofkolachi.com`,

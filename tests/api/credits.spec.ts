@@ -97,7 +97,6 @@ test.describe('Credits API', () => {
     // BUG-API: the HTTP status code on this response is 201 (Created), but the JSON
     // body's own "status" field says 200. Same mismatch happens on /credits/refund.
     // See api-bug-log.md.
-    test.fail();
     const res = await authedApi.post('/credits/deduct', { data: { amount: 1 } });
     const body = await res.json();
     expect(body.status).toBe(res.status());

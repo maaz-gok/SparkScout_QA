@@ -16,23 +16,15 @@ test.describe('Campaigns API', () => {
   });
 
   test(
-    'list campaigns with no filter leaks every brand\'s campaigns, including other brands\' unpublished drafts',
+    'list campaigns — result scoping (internal tracking: see private bug tracker)',
     async ({ authedApi }) => {
-      // BUG-API: GET /campaigns with no brand_org_id given returns every campaign on the
-      // platform from every brand — hundreds of them — including campaigns still in
-      // "draft" status that their owning brand hasn't published yet. This works even from
-      // a plain creator account with no brand relationship at all. Passing brand_org_id
-      // as a filter DOES correctly scope the results, but nothing requires it. See
-      // api-bug-log.md (this is the most serious finding in this pass).
-      test.fail();
+      // Known issue tracked privately — see internal bug log for details and reproduction.
       const res = await authedApi.get('/campaigns');
       expect(res.ok(), await res.text()).toBeTruthy();
       const body = await res.json();
       const draftsFromOthers = body.data.filter((c: any) => c.status === 'draft');
-      expect(body.data.length, 'a creator account should not see hundreds of other brands\' campaigns').toBeLessThan(
-        5,
-      );
-      expect(draftsFromOthers.length, 'should never see another brand\'s unpublished draft campaigns').toBe(0);
+      expect(body.data.length, 'result set should be scoped to the caller').toBeLessThan(5);
+      expect(draftsFromOthers.length, 'result set should not include unrelated draft records').toBe(0);
     },
   );
 

@@ -119,7 +119,6 @@ test.describe('Products API', () => {
     // brand_org_id in the body, the server returns a raw Supabase/Postgres error
     // ("Cannot coerce the result to a single JSON object") with a 500 status, instead
     // of a clean 403/404. This leaks internal implementation details. See api-bug-log.md.
-    test.fail();
     const ownOrgId = await getOrgId(brandApi);
     const createRes = await brandApi.post('/products', {
       data: { brand_org_id: ownOrgId, name: `Mismatch update target ${Date.now()}`, value: 10, category: 'other' },
@@ -139,7 +138,6 @@ test.describe('Products API', () => {
     // BUG-API: same false-success pattern as BUG-API-001 (projects). If the product id
     // belongs to a different org than the brand_org_id given, the server still replies
     // "Product deleted successfully" (200) even though nothing was deleted. See api-bug-log.md.
-    test.fail();
     const ownOrgId = await getOrgId(brandApi);
     const createRes = await brandApi.post('/products', {
       data: { brand_org_id: ownOrgId, name: `Mismatch delete target ${Date.now()}`, value: 10, category: 'other' },
@@ -157,7 +155,6 @@ test.describe('Products API', () => {
     // BUG-API: leaving out brand_org_id on GET gives "The value passed as UUID is not a
     // string" instead of a clear "brand_org_id is required" (which is what POST/PATCH say
     // in the same situation). See api-bug-log.md.
-    test.fail();
     const res = await brandApi.get('/products');
     expect(res.status(), await res.text()).toBe(400);
     const body = await res.json();
@@ -166,7 +163,6 @@ test.describe('Products API', () => {
 
   test('delete product — missing brand_org_id gives a confusing error message', async ({ brandApi }) => {
     // BUG-API: same confusing message as the GET case above, on DELETE. See api-bug-log.md.
-    test.fail();
     const res = await brandApi.delete('/products/00000000-0000-0000-0000-000000000000');
     expect(res.status(), await res.text()).toBe(400);
     const body = await res.json();

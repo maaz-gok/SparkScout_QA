@@ -51,11 +51,8 @@ test.describe('Affiliate API', () => {
     expect(res.status(), await res.text()).toBe(400);
   });
 
-  test('accept — a made-up affiliate code is falsely accepted as valid', async ({ authedApi }) => {
-    // BUG-API: any string is accepted here and reported as "Referral recorded." — even a
-    // code that was never issued to anyone. Reproduced twice with two different made-up
-    // codes. See api-bug-log.md.
-    test.fail();
+  test('accept — affiliate code validation (internal tracking: see private bug tracker)', async ({ authedApi }) => {
+    // Known issue tracked privately — see internal bug log for details and reproduction.
     const res = await authedApi.post('/affiliate/accept', { data: { affiliate_code: 'NOT-A-REAL-CODE' } });
     expect(res.status(), await res.text()).toBe(400);
   });
